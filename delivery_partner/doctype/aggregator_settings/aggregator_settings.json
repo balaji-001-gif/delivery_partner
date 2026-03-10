@@ -25,6 +25,44 @@
             "fieldtype": "Link",
             "options": "Customer",
             "label": "Default Customer"
+        },
+        {
+            "fieldname": "company",
+            "fieldtype": "Link",
+            "options": "Company",
+            "label": "Company"
+        },
+        {
+            "fieldname": "tax_template",
+            "fieldtype": "Link",
+            "options": "Sales Taxes and Charges Template",
+            "label": "Taxes and Charges Template"
+        },
+        {
+            "fieldname": "formatting_section",
+            "fieldtype": "Section Break",
+            "label": "Charges and Discounts Items"
+        },
+        {
+            "fieldname": "packaging_charge_item",
+            "fieldtype": "Link",
+            "options": "Item",
+            "label": "Packaging Charge Item",
+            "description": "Standard service item to map Aggregator Packaging Charges"
+        },
+        {
+            "fieldname": "delivery_charge_item",
+            "fieldtype": "Link",
+            "options": "Item",
+            "label": "Delivery Charge Item",
+            "description": "Standard service item to map Delivery Charges"
+        },
+        {
+            "fieldname": "discount_item",
+            "fieldtype": "Link",
+            "options": "Item",
+            "label": "Discount Item",
+            "description": "Service item with negative price to map order level discounts"
         }
     ]
 }

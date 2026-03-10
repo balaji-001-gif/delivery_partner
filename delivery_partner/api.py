@@ -44,10 +44,13 @@ def process_aggregator_order(log_name):
         items = []
         customer_name = settings.default_customer
         
+        # Add-ons like delivery out of settings
+        delivery_charge = 0.0
+        packaging_charge = 0.0
+        discount_amount = 0.0
+        
         # 2. Parse payload based on Provider (Swiggy vs Zomato)
         if provider == "zomato":
-            # Example Zomato Payload Parsing
-            # { "order_id": "123", "customer": {"name": "John", "phone": "123"}, "order_items": [{"item_id": "Z123", "quantity": 1, "price": 100}] }
             order_id = payload.get("order_id")
             for item in payload.get("order_items", []):
                 aggregator_item_id = str(item.get("item_id"))
@@ -65,9 +68,13 @@ def process_aggregator_order(log_name):
                     "rate": rate
                 })
                 
+            # Extract Zomato charges
+            # Note: The specific keys vary based on their actual schema version
+            delivery_charge = float(payload.get("delivery_charge", 0.0))
+            packaging_charge = float(payload.get("packaging_charge", 0.0))
+            discount_amount = float(payload.get("restaurant_discount", 0.0))
+                
         elif provider == "swiggy":
-            # Example Swiggy Payload Parsing
-            # { "id": "456", "customer_details": {"name": "Jane", "mobile": "456"}, "cart": {"items": [{"item_id": "S456", "qty": 2, "final_price": 200}]} }
             order_id = payload.get("id")
             for item in payload.get("cart", {}).get("items", []):
                 aggregator_item_id = str(item.get("item_id"))
@@ -84,20 +91,57 @@ def process_aggregator_order(log_name):
                     "qty": qty,
                     "rate": rate
                 })
+                
+            # Extract Swiggy charges
+            charges = payload.get("cart", {}).get("charges", {})
+            delivery_charge = float(charges.get("delivery_charge", 0.0))
+            packaging_charge = float(charges.get("packing_charge", 0.0))
+            discount_amount = float(payload.get("cart", {}).get("restaurant_trade_discount", 0.0))
+            
         else:
             raise Exception(f"Unknown Provider: {provider}")
             
-        # 3. Create the Sales Order in ERPNext
+        # 3. Handle Extra Charges & Discounts by appending them as Service Items
+        if delivery_charge > 0 and settings.delivery_charge_item:
+            items.append({
+                "item_code": settings.delivery_charge_item,
+                "qty": 1,
+                "rate": delivery_charge
+            })
+            
+        if packaging_charge > 0 and settings.packaging_charge_item:
+            items.append({
+                "item_code": settings.packaging_charge_item,
+                "qty": 1,
+                "rate": packaging_charge
+            })
+            
+        if discount_amount > 0 and settings.discount_item:
+            items.append({
+                "item_code": settings.discount_item,
+                "qty": 1,
+                "rate": -abs(discount_amount) # Negative rate for discount
+            })
+            
+        # 4. Create the Sales Order in ERPNext
         if not items:
             raise Exception("No items found in the payload.")
             
-        so = frappe.get_doc({
+        so_data = {
             "doctype": "Sales Order",
             "customer": customer_name,
-            "po_no": f"{log.provider}-{order_id}",
+            "po_no": f"{provider.upper()}-{order_id}",
             "items": items,
-            # Adjust these generic defaults depending on the user's ERPNext config
-        })
+        }
+        
+        # Apply company and taxes
+        if settings.company:
+            so_data["company"] = settings.company
+            
+        if settings.tax_template:
+            so_data["taxes_and_charges"] = settings.tax_template
+            
+        so = frappe.get_doc(so_data)
         so.insert(ignore_permissions=True)
         so.submit()
         
