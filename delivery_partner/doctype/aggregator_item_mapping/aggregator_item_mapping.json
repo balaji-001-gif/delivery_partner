@@ -1,0 +1,27 @@
+{
+    "name": "Aggregator Item Mapping",
+    "module": "Delivery Partner",
+    "custom": 0,
+    "fields": [
+        {
+            "fieldname": "erpnext_item",
+            "fieldtype": "Link",
+            "options": "Item",
+            "label": "ERPNext Item",
+            "reqd": 1
+        },
+        {
+            "fieldname": "provider",
+            "fieldtype": "Select",
+            "options": "Swiggy\nZomato",
+            "label": "Provider",
+            "reqd": 1
+        },
+        {
+            "fieldname": "aggregator_item_id",
+            "fieldtype": "Data",
+            "label": "Aggregator Item ID",
+            "reqd": 1
+        }
+    ]
+}

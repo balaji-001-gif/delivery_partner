@@ -1,0 +1,36 @@
+{
+    "name": "Aggregator Order Log",
+    "module": "Delivery Partner",
+    "custom": 0,
+    "fields": [
+        {
+            "fieldname": "order_id",
+            "fieldtype": "Data",
+            "label": "Order ID",
+            "reqd": 1
+        },
+        {
+            "fieldname": "provider",
+            "fieldtype": "Data",
+            "label": "Provider",
+            "reqd": 1
+        },
+        {
+            "fieldname": "raw_payload",
+            "fieldtype": "Code",
+            "options": "JSON",
+            "label": "Raw Payload"
+        },
+        {
+            "fieldname": "status",
+            "fieldtype": "Select",
+            "options": "Pending\nProcessed\nFailed",
+            "label": "Status"
+        },
+        {
+            "fieldname": "error_log",
+            "fieldtype": "Code",
+            "label": "Error Log"
+        }
+    ]
+}

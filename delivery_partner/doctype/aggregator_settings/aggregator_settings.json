@@ -1,0 +1,30 @@
+{
+    "name": "Aggregator Settings",
+    "module": "Delivery Partner",
+    "custom": 0,
+    "issingle": 1,
+    "fields": [
+        {
+            "fieldname": "provider_name",
+            "fieldtype": "Select",
+            "options": "Swiggy\nZomato",
+            "label": "Provider"
+        },
+        {
+            "fieldname": "api_key",
+            "fieldtype": "Data",
+            "label": "API Key"
+        },
+        {
+            "fieldname": "api_secret",
+            "fieldtype": "Password",
+            "label": "API Secret"
+        },
+        {
+            "fieldname": "default_customer",
+            "fieldtype": "Link",
+            "options": "Customer",
+            "label": "Default Customer"
+        }
+    ]
+}

@@ -1,0 +1,19 @@
+[project]
+name = "delivery_partner"
+authors = [
+    { name = "Balaji", email = "balaji@example.com"}
+]
+description = "Integration with Delivery Partners (Swiggy/Zomato)"
+requires-python = ">=3.10"
+readme = "README.md"
+dynamic = ["version"]
+dependencies = [
+    "frappe~=15.0"
+]
+
+[build-system]
+requires = ["flit_core >=3.4,<4"]
+build-backend = "flit_core.buildapi"
+
+[tool.flit.module]
+name = "delivery_partner"
